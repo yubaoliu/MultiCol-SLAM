@@ -1,0 +1,11 @@
+build
+ThirdParty/DBoW2/build
+ThirdParty/DBoW2/lib
+ThirdParty/OpenGV/build
+ThirdParty/g2o/build
+ThirdParty/g2o/lib
+ThirdParty/g2o/config.h
+Examples/Lafida/multi_col_slam_lafida
+lib
+.vscode
+

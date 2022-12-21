@@ -18,6 +18,11 @@
 
 project (MultiCol-SLAM)
 
+
+if(COMMAND cmake_policy)
+  cmake_policy(SET CMP0003 NEW)
+endif(COMMAND cmake_policy)
+
 IF(NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE Release)
 ENDIF()
@@ -31,11 +36,16 @@ endif(WIN32)
 MESSAGE("Build type: " ${CMAKE_BUILD_TYPE})
 
 IF(WIN32)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -openmp -W0 -MP")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -openmp -W0 -MP")
+  # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -openmp -W0 -MP")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -openmp -W0 -MP")
 ELSE()
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fopenmp -O3 -march=native -std=c++11")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -O3 -march=native -std=c++11")
+  IF(CMAKE_CXX_FLAGS MATCHES "Debug")
+    MESSAGE("set debug parameters")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -g -O0 -march=native -std=c++14")
+  ELSE()
+    # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fopenmp -O3 -march=native -std=c++11")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -O3 -march=native -std=c++14")
+  ENDIF()
 ENDIF()
 
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
@@ -85,41 +95,41 @@ ENDIF()
 
 
 SET(MultiColHeaders
-include/cam_model_omni.h
-include/cam_system_omni.h
-include/cConverter.h
-include/cMultiFrame.h
-include/cMultiFramePublisher.h
-include/cMultiKeyFrame.h
-include/cConverter.h
-include/cMapPoint.h
-include/cMap.h
-include/cMapPublisher.h
-include/cLocalMapping.h
-include/cLoopClosing.h
-include/cOptimizer.h
-include/cORBVocabulary.h
-include/cORBmatcher.h
-include/cMultiFrame.h
-include/cMultiKeyFrameDatabase.h
-include/cSim3Solver.h
-include/cSystem.h
-include/cTracking.h
-include/cMultiInitializer.h
-include/cViewer.h
-include/mdBRIEFextractorOct.h
-include/misc.h
-#include/MultiCol_cayley_jacobians.h
-include/g2o_MultiCol_vertices_edges.h
-include/g2o_MultiCol_sim3_expmap.h
+  include/cam_model_omni.h
+  include/cam_system_omni.h
+  include/cConverter.h
+  include/cMultiFrame.h
+  include/cMultiFramePublisher.h
+  include/cMultiKeyFrame.h
+  include/cConverter.h
+  include/cMapPoint.h
+  include/cMap.h
+  include/cMapPublisher.h
+  include/cLocalMapping.h
+  include/cLoopClosing.h
+  include/cOptimizer.h
+  include/cORBVocabulary.h
+  include/cORBmatcher.h
+  include/cMultiFrame.h
+  include/cMultiKeyFrameDatabase.h
+  include/cSim3Solver.h
+  include/cSystem.h
+  include/cTracking.h
+  include/cMultiInitializer.h
+  include/cViewer.h
+  include/mdBRIEFextractorOct.h
+  include/misc.h
+  #include/MultiCol_cayley_jacobians.h
+  include/g2o_MultiCol_vertices_edges.h
+  include/g2o_MultiCol_sim3_expmap.h
 )
 
 include_directories(
-${PROJECT_SOURCE_DIR}
-${PROJECT_SOURCE_DIR}/include
-${PROJECT_SOURCE_DIR}/ThirdParty
-${PROJECT_SOURCE_DIR}/ThirdParty/g2o
-${Pangolin_INCLUDE_DIRS}
+  ${PROJECT_SOURCE_DIR}
+  ${PROJECT_SOURCE_DIR}/include
+  ${PROJECT_SOURCE_DIR}/ThirdParty
+  ${PROJECT_SOURCE_DIR}/ThirdParty/g2o
+  ${Pangolin_INCLUDE_DIRS}
 )
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
@@ -155,42 +165,42 @@ ${MultiColHeaders}
 )
 
 IF(WIN32)
-SET (G2OLIBS_DEBUG ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/bin/Debug/g2o.lib)
-SET (DBOW2LIBS_DEBUG  ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/Debug/DBoW2.lib)
-SET (OPENGVLIBS_DEBUG  ${PROJECT_SOURCE_DIR}/ThirdParty/OpenGV/build/lib/Debug/opengv.lib) 
-SET (RANDOMGENLIBS_DEBUG ${PROJECT_SOURCE_DIR}/ThirdParty/OpenGV/build/lib/Debug/random_generators.lib)
-    
-SET (G2OLIBS ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/bin/Release/g2o.lib)
-SET (DBOW2LIBS ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/Release/DBoW2.lib)
-SET (OPENGVLIBS ${PROJECT_SOURCE_DIR}/ThirdParty/OpenGV/build/lib/Release/opengv.lib) 
-SET (RANDOMGENLIBS ${PROJECT_SOURCE_DIR}/ThirdParty/OpenGV/build/lib/Release/random_generators.lib)
+  SET (G2OLIBS_DEBUG ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/bin/Debug/g2o.lib)
+  SET (DBOW2LIBS_DEBUG  ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/Debug/DBoW2.lib)
+  SET (OPENGVLIBS_DEBUG  ${PROJECT_SOURCE_DIR}/ThirdParty/OpenGV/build/lib/Debug/opengv.lib) 
+  SET (RANDOMGENLIBS_DEBUG ${PROJECT_SOURCE_DIR}/ThirdParty/OpenGV/build/lib/Debug/random_generators.lib)
+      
+  SET (G2OLIBS ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/bin/Release/g2o.lib)
+  SET (DBOW2LIBS ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/Release/DBoW2.lib)
+  SET (OPENGVLIBS ${PROJECT_SOURCE_DIR}/ThirdParty/OpenGV/build/lib/Release/opengv.lib) 
+  SET (RANDOMGENLIBS ${PROJECT_SOURCE_DIR}/ThirdParty/OpenGV/build/lib/Release/random_generators.lib)
 ELSE()
-SET (G2OLIBS ${PROJECT_SOURCE_DIR}/ThirdParty/g2o/lib/libg2o.so)
-SET (DBOW2LIBS ${PROJECT_SOURCE_DIR}/ThirdParty/DBoW2/lib/libDBoW2.so)
-SET (OPENGVLIBS ${PROJECT_SOURCE_DIR}/ThirdParty/OpenGV/build/lib/librandom_generators.a
-                ${PROJECT_SOURCE_DIR}/ThirdParty/OpenGV/build/lib/libopengv.a)
+  SET (G2OLIBS ${PROJECT_SOURCE_DIR}/ThirdParty/g2o/lib/libg2o.so)
+  SET (DBOW2LIBS ${PROJECT_SOURCE_DIR}/ThirdParty/DBoW2/lib/libDBoW2.so)
+  SET (OPENGVLIBS ${PROJECT_SOURCE_DIR}/ThirdParty/OpenGV/build/lib/librandom_generators.a
+                  ${PROJECT_SOURCE_DIR}/ThirdParty/OpenGV/build/lib/libopengv.a)
 ENDIF()
 
 IF(WIN32)
-target_link_libraries(${PROJECT_NAME}
-${OpenCV_LIBS}
-${Pangolin_LIBRARIES}
-optimized ${G2OLIBS}
-optimized ${DBOW2LIBS}
-optimized ${OPENGVLIBS}
-optimized ${RANDOMGENLIBS}
-debug ${G2OLIBS_DEBUG}
-debug ${DBOW2LIBS_DEBUG}
-debug ${OPENGVLIBS_DEBUG}
-debug ${RANDOMGENLIBS_DEBUG})
+  target_link_libraries(${PROJECT_NAME}
+  ${OpenCV_LIBS}
+  ${Pangolin_LIBRARIES}
+  optimized ${G2OLIBS}
+  optimized ${DBOW2LIBS}
+  optimized ${OPENGVLIBS}
+  optimized ${RANDOMGENLIBS}
+  debug ${G2OLIBS_DEBUG}
+  debug ${DBOW2LIBS_DEBUG}
+  debug ${OPENGVLIBS_DEBUG}
+  debug ${RANDOMGENLIBS_DEBUG})
 ELSE()
-target_link_libraries(${PROJECT_NAME}
-${OpenCV_LIBS}
-${Pangolin_LIBRARIES}
-${G2OLIBS}
-${DBOW2LIBS}
-${OPENGVLIBS}
-${RANDOMGENLIBS})
+  target_link_libraries(${PROJECT_NAME}
+  ${OpenCV_LIBS}
+  ${Pangolin_LIBRARIES}
+  ${G2OLIBS}
+  ${DBOW2LIBS}
+  ${OPENGVLIBS}
+  ${RANDOMGENLIBS})
 ENDIF()
 
 # Build examples
